@@ -7,7 +7,21 @@ use Illuminate\Http\Request;
 
 class PostController extends Controller
 {
-    public function forceDelete($post){
+
+    /**
+     * Quando se usa softDeletes deve-se atentar aos seguintes itens
+     * Campo na tabela: Através da migration você pode invocar o $table->softDeletes();
+     * Leitura: Você pode optar por 3 formatos
+     *      Post::all() Retorna o coletivo de artigos válidos (não exclusos)
+     *      Post::onlyTrashed()->get() Retorna o coletivo de artigos que foram marcados como exclusos
+     *      Post::withTrashed()->get() Retorna o coletivo de todos os artigos (exclusos e não exclusos)
+     *
+     * Remoção da base: forceDelete()
+     * Restauração do registro: restore()
+     */
+
+    public function forceDelete($post)
+    {
         Post::onlyTrashed()->where(['id' => $post])->forceDelete();
         return redirect()->route('posts.trashed');
     }
@@ -15,9 +29,11 @@ class PostController extends Controller
     public function restore($post)
     {
         $post = Post::onlyTrashed()->where(['id' => $post])->first();
+
         if($post->trashed()){
             $post->restore();
         }
+
         return redirect()->route('posts.trashed');
     }
     public function trashed()
