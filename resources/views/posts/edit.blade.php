@@ -12,23 +12,23 @@
 <body>
 
 <div class="container my-5">
-<form action="{{   route('posts.store') }}" method="post" autocomplete="off">
+<form action="{{   route('posts.update', ['post' => $post->id]) }}" method="post" autocomplete="off">
 
         @csrf
-
+        @method('PUT')
         <div class="form-group">
             <label for="title">Título:</label>
-            <input type="text" class="form-control" id="title" name="title">
+        <input type="text" class="form-control" id="title" name="title" value="{{$post->title}}">
         </div>
 
         <div class="form-group">
             <label for="subtitle">Subtítulo:</label>
-            <input type="text" class="form-control" id="subtitle" name="subtitle">
+            <input type="text" class="form-control" id="subtitle" name="subtitle"value="{{$post->subtitle}}">
         </div>
 
         <div class="form-group">
             <label for="description">Descrição:</label>
-            <input type="text" class="form-control" id="description" name="description">
+            <input type="text" class="form-control" id="description" name="description" value="{{$post->description}}">
         </div>
 
         <button class="btn btn-primary">Enviar!</button>

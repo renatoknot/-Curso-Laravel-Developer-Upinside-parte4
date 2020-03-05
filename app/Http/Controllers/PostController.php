@@ -116,7 +116,7 @@ class PostController extends Controller
      */
     public function create()
     {
-        //
+        return view('posts.create');
     }
 
     /**
@@ -127,7 +127,60 @@ class PostController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        /**
+         * Object Prop Save
+         * Consiste em você instanciar um objeto, atacar as propriedades e executar o método save
+         * Uma das formas mais utilizadas no dia a dia
+         * Identico ao formato de atualização
+         */
+        $post = new Post;
+        $post->title = $request->title;
+        $post->subtitle = $request->subtitle;
+        $post->description = $request->description;
+        $post->save();
+
+        /**
+         * Mass Assigment
+         * Para que esse formato funcione é necessário que o modelo (App\Post) tenha os atributos fillable e guarded alimentados
+         * fillable = Lista branca de campos que podem ser inseridos na base de dados
+         * guarded = Black list dos campos que não podem ser inseridos
+         * Um campo pode estar em uma das duas propriedades, mas nunca em ambas.
+         */
+//        Post::create([
+//            'title' => $request->title,
+//            'subtitle' => $request->subtitle,
+//            'description' => $request->description
+//        ]);
+
+        /**
+         * Pesquisa pelo registro, e caso não encontra cria uma nova instância com os dados fornecidos
+         * Deve ser informado dois arrays
+         * Depois de invocado é necessário fazer o uso do método save() para persistir os dados dentro do banco de dados
+         * Primeiro array: Condicionamento com array associativo
+         * Segundo array: Caso a pesquisa não retorne registro, alimenta os demais campos
+         */
+//        $post = Post::firstOrNew([
+//            'title' => 'teste2',
+//            'subtitle' => 'teste3',
+//        ], [
+//            'description' => 'teste2'
+//        ]);
+//        $post->save();
+
+        /**
+         * Pesquisa pelo registro, e caso não encontra cria um novo dentro do banco de dados
+         * Deve ser informado dois arrays
+         * Não é necessário fazer o uso do método save()
+         * Primeiro array: Condicionamento com array associativo
+         * Segundo array: Caso a pesquisa não retorne registro, alimenta os demais campos
+         */
+//        $post = Post::firstOrCreate([
+//            'title' => 'teste4',
+//            'subtitle' => 'teste4',
+//        ], [
+//            'description' => 'teste4'
+//        ]);
+        return redirect()->route('posts.index');
     }
 
     /**
@@ -149,7 +202,7 @@ class PostController extends Controller
      */
     public function edit(Post $post)
     {
-        //
+        return view('posts.edit', ['post' => $post]);
     }
 
     /**
@@ -161,7 +214,21 @@ class PostController extends Controller
      */
     public function update(Request $request, Post $post)
     {
-        //
+
+        $post = Post::find($post->id);
+        $post->title = $request->title;
+        $post->subtitle = $request->subtitle;
+        $post->description = $request->description;
+        $post->save();
+
+        // $post = Post::updateOrCreate([
+        //     'title' => 'teste5'
+        // ],[
+        //     'subtitle' => 'teste5',
+        //     'description' => 'teste5'
+        // ]);
+
+        return redirect()->route('posts.index');
     }
 
     /**
