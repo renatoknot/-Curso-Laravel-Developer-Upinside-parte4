@@ -214,19 +214,38 @@ class PostController extends Controller
      */
     public function update(Request $request, Post $post)
     {
-
+        /**
+         * Object Prop Save
+         * Nesse caso não é necessário instanciar o objeto, porque o parâmetro do método já é o próprio modelo
+         * Você pode omitir a instância ou ainda alimentar novamente a variável post utilizando o método find()
+         * Faz o uso do método save() no final para persistir os dados dentro do banco de dados
+         */
+        //$post = new Post; // não se deve utilizar a instância
         $post = Post::find($post->id);
         $post->title = $request->title;
         $post->subtitle = $request->subtitle;
         $post->description = $request->description;
         $post->save();
 
-        // $post = Post::updateOrCreate([
-        //     'title' => 'teste5'
-        // ],[
-        //     'subtitle' => 'teste5',
-        //     'description' => 'teste5'
-        // ]);
+        /**
+         * Assim como você tem o firstOrCreate que busca um registro e caso não encontre ele cria um novo no banco de dados,
+         * o updateOrCreate tem basicamente a mesma responsabilidade... Mas ele vai buscar um registro, se não tiver ele cria,
+         * e se já exisitir ele atualiza os dados
+         * Não é necessário fazer o uso do método save() para persistir as informações
+         */
+//        $post = Post::updateOrCreate([
+//            'title' => 'teste5'
+//        ],[
+//            'subtitle' => 'teste6',
+//            'description' => 'teste6'
+//        ]);
+
+        /**
+         * Atualização em massa
+         * Informe a query builder com um coletivo de registros e passe o método update encadeado com um array associativo
+         * O array deve conter o nome do campo e o respectivo valor
+         */
+//        Post::where('created_at', '>=', date('Y-m-d H:i:s'))->update(['description' => 'teste']);
 
         return redirect()->route('posts.index');
     }
@@ -239,6 +258,8 @@ class PostController extends Controller
      */
     public function destroy(Post $post)
     {
-        //
+    //   Post::find($post->id)->delete();
+        Post::destroy($post->id);
+        return redirect()->route('posts.index');
     }
 }
